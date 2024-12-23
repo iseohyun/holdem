@@ -148,17 +148,21 @@ def print_file(my_hand):
                         start_processing = True
                         print(">> Start process: ", players)
                     continue
-                    
+
                 start_processing = True
                 print(">> Start process: ", players)
 
             players[1] = [outs[i], outs[j]]
             cur_pattern = get_pattern(players)
-            message_out = f"\n['{int2card(players[1][0])}', '{int2card(players[1][1])}'], "
+            message_out = (
+                f"\n['{int2card(players[1][0])}', '{int2card(players[1][1])}'], "
+            )
 
             for k, pattern in enumerate(patterns):
                 if cur_pattern == pattern:
-                    search_text = f"{int2card(outs[i])}', '{int2card(outs[j] -len(patterns) + k)}"
+                    search_text = (
+                        f"{int2card(outs[i])}', '{int2card(outs[j] -len(patterns) + k)}"
+                    )
                     with open(filename, "r") as f:
                         for line in f:
                             if search_text in line:
@@ -177,10 +181,10 @@ def print_file(my_hand):
                 patterns = []
             else:
                 patterns.append(cur_pattern)
-            
+
             current_time = datetime.datetime.now()
-            time_diff =  current_time - last_time
-            print(f"[{current_time}({time_diff.seconds})]: {message_out[1:]}")
+            time_diff = current_time - last_time
+            print(f"{my_hand[0]}{my_hand[1]}[{current_time}({time_diff.seconds})]: {message_out[1:]}")
             last_time = current_time
 
 
@@ -189,7 +193,7 @@ def get_pattern(players):
     첫 카드는 항상 처음 등장(spades)
     2번째 카드는 항상 (spades 또는 clubs)
     예시: [(1)111, (1)112, 121, 122, 123, 211, 212, 222, 223, 233, 234]
-    
+
     >>> get_pattern([[0, 1], [2, 3]])
     234
     >>> get_pattern([[12, 16], [42, 43]])
@@ -201,7 +205,7 @@ def get_pattern(players):
     """
     order = [1, 0, 0, 0]
 
-    if(players[0][1] % 4 == 0):
+    if players[0][1] % 4 == 0:
         pattern = 10
     else:
         order[1] = 2
@@ -221,26 +225,13 @@ def get_pattern(players):
     return pattern
 
 
-def create_data_thread():
-    threads = []
-
-    for my_hand in my_hand_set:
-        thread = threading.Thread(target=print_file, args=([my_hand]))
-        threads.append(thread)
-        thread.start()
-
-    for thread in threads:
-        thread.join()
-
-
-# create_data_thread()
-
 def create_data():
     for my_hand in my_hand_set:
         print_file(my_hand)
 
+
 create_data()
 
-import doctest
+# import doctest
 
 # print(doctest.testmod())
